@@ -1,0 +1,27 @@
+source ~/.config/zsh/env.zsh
+source ~/.config/zsh/fzf.zsh
+source ~/.config/zsh/completion.zsh
+
+command -v starship &>/dev/null && eval "$(starship init zsh)"
+command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
+command -v fzf &>/dev/null && source <(fzf --zsh)
+
+source ~/.config/zsh/plugin.zsh
+source ~/.config/zsh/aliases.zsh
+source ~/.config/zsh/function.zsh
+# source ~/.config/zsh/vi.zsh
+
+bindkey -r "^[x"
+
+# export GTK_IM_MODULE=fcitx
+# export QT_IM_MODULE=fcitx
+# export XMODIFIERS=@im=fcitx
+# export SDL_IM_MODULE=fcitx
+# # export GLFW_IM_MODULE=ibus
+
+# deb http://deb.debian.org/debian testing main contrib non-free
+# deb https://mirrors.tuna.tsinghua.edu.cn/debian/ testing main contrib non-free
+#
+# # deb http://deb.debian.org/debian/ bookworm main contrib non-free
+# # deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free
+typeset -U path

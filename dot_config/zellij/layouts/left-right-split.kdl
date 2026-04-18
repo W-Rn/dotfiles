@@ -1,0 +1,18 @@
+layout {
+    // 顶部: tab-bar (标签栏)
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+    // 中间: 主内容区域
+    pane split_direction="vertical" {
+        pane
+        pane split_direction="horizontal" {
+            pane
+            pane
+        }
+    }
+    // 底部: status-bar (状态栏 + 按键提示)
+    pane size=1 borderless=true {
+        plugin location="zellij:status-bar"
+    }
+}

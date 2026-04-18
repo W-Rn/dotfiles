@@ -1,0 +1,482 @@
+//
+// 此文件由 Zellij 自动生成，此位置的上一个文件已备份到: /home/haron/.config/zellij/config.kdl.bak
+//
+
+keybinds clear-defaults=true {
+    locked {
+        bind "Alt a" { SwitchToMode "normal"; }
+    }
+    pane {
+        bind "p" { SwitchToMode "normal"; }
+        bind "r" { SwitchToMode "renamepane"; PaneNameInput 0; }
+        bind "k" { NewPane "up"; SwitchToMode "locked"; }
+        bind "j" { NewPane "down"; SwitchToMode "locked"; }
+        bind "h" { NewPane "left"; SwitchToMode "locked"; }
+        bind "l" { NewPane "right"; SwitchToMode "locked"; }
+        bind "s" { NewPane "stacked"; SwitchToMode "locked"; }
+        bind "e" { TogglePaneEmbedOrFloating; SwitchToMode "locked"; }
+        bind "f" { ToggleFocusFullscreen; SwitchToMode "locked"; }
+        bind "i" { TogglePanePinned; SwitchToMode "locked"; }
+        bind "n" { NewPane; SwitchToMode "locked"; }
+        bind "w" { ToggleFloatingPanes; SwitchToMode "locked"; }
+        bind "c" { CloseFocus; SwitchToMode "locked"; }
+        bind "z" { TogglePaneFrames; SwitchToMode "locked"; }
+        bind "[" { BreakPaneLeft; SwitchToMode "locked"; }
+        bind "]" { BreakPaneRight; SwitchToMode "locked"; }
+        bind "b" { BreakPane; SwitchToMode "locked"; }
+        bind "tab" { SwitchFocus; }
+    }
+    tab {
+        bind "t" { SwitchToMode "normal"; }
+        bind "h" { GoToPreviousTab; }
+        bind "l" { GoToNextTab; }
+        bind "n" { NewTab; SwitchToMode "locked"; }
+        bind "r" { SwitchToMode "renametab"; TabNameInput 0; }
+        bind "s" { ToggleActiveSyncTab; SwitchToMode "locked"; }
+        bind "c" { CloseTab; SwitchToMode "locked"; }
+        bind "tab" { ToggleTab; }
+    }
+    resize {
+        bind "r" { SwitchToMode "normal"; }
+        bind "-" { Resize "Decrease"; }
+        bind "=" { Resize "Increase"; }
+        bind "h" { Resize "Increase left"; }
+        bind "j" { Resize "Increase down"; }
+        bind "k" { Resize "Increase up"; }
+        bind "l" { Resize "Increase right"; }
+    }
+    move {
+        bind "m" { SwitchToMode "normal"; }
+        bind "h" { MovePane "left"; }
+        bind "j" { MovePane "down"; }
+        bind "k" { MovePane "up"; }
+        bind "l" { MovePane "right"; }
+        bind "o" { MoveTab "right"; }
+        bind "u" { MoveTab "left"; }
+    }
+    scroll {
+        bind "s" { SwitchToMode "normal"; }
+        bind "e" { EditScrollback; SwitchToMode "locked"; }
+        bind "/" { SwitchToMode "entersearch"; SearchInput 0; }
+    }
+    search {
+        bind "c" { SearchToggleOption "CaseSensitivity"; }
+        bind "w" { SearchToggleOption "Wrap"; }
+        bind "o" { SearchToggleOption "WholeWord"; }
+        bind "n" { Search "down"; }
+        bind "N" { Search "up"; }
+        bind "/" { SwitchToMode "entersearch"; SearchInput 0; }
+    }
+    entersearch {
+        bind "enter" { SwitchToMode "search"; }
+        bind "esc" { SwitchToMode "scroll"; }
+        bind "Ctrl c" { ScrollToBottom; SwitchToMode "locked"; }
+    }
+    renametab {
+        bind "esc" { UndoRenameTab; SwitchToMode "locked"; }
+    }
+    renamepane {
+        bind "esc" { UndoRenamePane; SwitchToMode "locked"; }
+    }
+
+    session {
+        bind "o" { SwitchToMode "normal"; }
+        bind "d" { Detach; }
+        bind "a" {
+            LaunchOrFocusPlugin "zellij:about" {
+                floating true
+                move_to_focused_tab true
+            }
+            SwitchToMode "locked"
+        }
+        bind "c" {
+            LaunchOrFocusPlugin "configuration" {
+                floating true
+                move_to_focused_tab true
+            }
+            SwitchToMode "locked"
+        }
+        bind "l" {
+            LaunchOrFocusPlugin "zellij:layout-manager" {
+                floating true
+                move_to_focused_tab true
+            }
+            SwitchToMode "locked"
+        }
+        bind "p" {
+            LaunchOrFocusPlugin "plugin-manager" {
+                floating true
+                move_to_focused_tab true
+            }
+            SwitchToMode "locked"
+        }
+        bind "s" {
+            LaunchOrFocusPlugin "zellij:share" {
+                floating true
+                move_to_focused_tab true
+            }
+            SwitchToMode "locked"
+        }
+        bind "w" {
+            LaunchOrFocusPlugin "session-manager" {
+                floating true
+                move_to_focused_tab true
+            }
+            SwitchToMode "locked"
+        }
+    }
+    //在这些模式下按键不生效
+    shared_except "locked" "entersearch" {
+        bind "enter" { SwitchToMode "locked"; }
+        bind "esc" { SwitchToMode "locked"; }
+    }
+    //在这些模式下按键生效
+    shared_among "locked" {
+        bind "Alt n" { NewPane; }
+        bind "Alt [" { PreviousSwapLayout; }
+        bind "Alt ]" { NextSwapLayout; }
+        bind "Alt f" { ToggleFloatingPanes; }
+        bind "Alt h" { MoveFocus "left"; }
+        bind "Alt j" { MoveFocus "down"; }
+        bind "Alt k" { MoveFocus "up"; }
+        bind "Alt l" { MoveFocus "right"; }
+        bind "Alt 1" { GoToTab 1; SwitchToMode "locked"; }
+        bind "Alt 2" { GoToTab 2; SwitchToMode "locked"; }
+        bind "Alt 3" { GoToTab 3; SwitchToMode "locked"; }
+        bind "Alt 4" { GoToTab 4; SwitchToMode "locked"; }
+        bind "Alt 5" { GoToTab 5; SwitchToMode "locked"; }
+        bind "Alt 6" { GoToTab 6; SwitchToMode "locked"; }
+        bind "Alt 7" { GoToTab 7; SwitchToMode "locked"; }
+        bind "Alt 8" { GoToTab 8; SwitchToMode "locked"; }
+        bind "Alt 9" { GoToTab 9; SwitchToMode "locked"; }
+    }
+    shared_among "normal" {
+        bind "p" { SwitchToMode "pane"; }
+        bind "m" { SwitchToMode "move"; }
+        bind "o" { SwitchToMode "session"; }
+        bind "t" { SwitchToMode "tab"; }
+        bind "r" { SwitchToMode "resize"; }
+        bind "s" { SwitchToMode "scroll"; }
+        bind "Ctrl q" { Quit; }
+    }
+    shared_among "scroll" "search" {
+        bind "ctrl d" { PageScrollDown; }
+        bind "ctrl u" { PageScrollUp; }
+        bind "Ctrl c" { ScrollToBottom; SwitchToMode "locked"; }
+        bind "j" { ScrollDown; }
+        bind "k" { ScrollUp; }
+        bind "Alt h" { MoveFocus "left"; }
+        bind "Alt j" { MoveFocus "down"; }
+        bind "Alt k" { MoveFocus "up"; }
+        bind "Alt l" { MoveFocus "right"; }
+    }
+}
+
+// 插件别名 - 可用于更改 Zellij 的实现
+// 修改这些需要重启才能生效
+plugins {
+    about location="zellij:about"
+    compact-bar location="zellij:compact-bar"
+    configuration location="zellij:configuration"
+    filepicker location="zellij:strider" {
+        cwd "/"
+    }
+    plugin-manager location="zellij:plugin-manager"
+    session-manager location="zellij:session-manager"
+    status-bar location="zellij:status-bar"
+    strider location="zellij:strider"
+    tab-bar location="zellij:tab-bar"
+    welcome-screen location="zellij:session-manager" {
+        welcome_screen true
+    }
+}
+
+// 新会话启动时在后台加载的插件
+// 例如: "file:/path/to/my-plugin.wasm"
+// 例如: "https://example.com/my-plugin.wasm"
+load_plugins {
+    zellij:link
+}
+web_client {
+    font "JetBrainsMono Nerd Font"
+}
+
+// 使用简化 UI，不使用特殊字体（箭头符号）
+// 选项:
+//   - true
+//   - false (默认)
+//
+// simplified_ui true
+
+// 启用 OSC8 超链接输出
+// 选项:
+//   - true (默认)
+//   - false
+//
+// osc8_hyperlinks true
+
+// 选择在 themes 部分指定的主题
+// 默认: default
+//
+theme "catppuccin-macchiato"
+
+// 选择 Zellij 的基础输入模式
+// 默认: normal
+//
+default_mode "locked"
+// 启动时是否显示提示
+// 默认: true
+//
+show_startup_tips false
+
+// 选择 Zellij 打开新窗格时使用的默认 shell 路径
+// 默认: $SHELL
+//
+// default_shell "fish"
+
+// 选择覆盖 Zellij 打开新窗格时的工作目录
+//
+// default_cwd "/tmp"
+
+// 启动时加载的默认布局名称
+// 默认: "default"
+//
+// default_layout "compact"
+
+// Zellij 查找布局的目录
+// (需要重启)
+//
+// layout_dir "/tmp"
+
+// Zellij 查找主题的目录
+// (需要重启)
+//
+// theme_dir "/tmp"
+
+// 切换启用鼠标模式
+// 在某些配置或终端上，这可能会干扰文本复制
+// 选项:
+//   - true (默认)
+//   - false
+//
+// mouse_mode false
+
+// 切换窗格周围的边框
+// 选项:
+//   - true (默认，启用)
+//   - false
+//
+// pane_frames false
+
+// 附加到已有会话时，是否镜像 (true)
+// 还是每个用户有自己的光标 (false)
+// (需要重启)
+// 默认: false
+//
+// mirror_session true
+
+// 当 Zellij 收到 SIGTERM, SIGINT, SIGQUIT 或 SIGHUP 时的行为
+// 例如: 关闭包含活动 Zellij 会话的终端窗口时
+// (需要重启)
+// 选项:
+//   - detach (默认)
+//   - quit
+//
+// on_force_close "quit"
+
+// 配置滚动回溯缓冲区大小
+// 这是 Zellij 为每个窗格存储的滚动回溯行数
+// 超出的行按 FIFO 方式丢弃
+// (需要重启)
+// 有效值: 正整数
+// 默认值: 10000
+//
+// scroll_buffer_size 10000
+
+// 提供复制文本时执行的命令
+// 文本将通过管道传入该命令的 stdin 来执行复制
+// 适用于不支持 OSC 52 ANSI 控制序列的终端
+// 如果不设置此选项，将默认使用 OSC 52
+// 示例:
+//
+// copy_command "xclip -selection clipboard" // x11
+// copy_command "wl-copy"                    // wayland
+// copy_command "pbcopy"                     // osx
+//
+// copy_command "pbcopy"
+
+// 选择复制文本的目标
+// 允许使用主选择缓冲区 (x11/wayland) 而不是系统剪贴板
+// 使用 copy_command 时不适用
+// 选项:
+//   - system (默认)
+//   - primary
+//
+// copy_clipboard "primary"
+
+// 释放鼠标时启用自动复制（并清除）选中文本
+// 默认: true
+//
+// copy_on_select true
+
+// 编辑窗格滚动缓冲区时使用的默认编辑器路径
+// 默认: $EDITOR 或 $VISUAL
+// scrollback_editor "/usr/bin/vim"
+
+// 始终给 Zellij 会话的固定名称
+// 同时考虑设置 `attach_to_session true`
+// 否则如果该会话已存在会报错
+// 默认: <随机>
+//
+// session_name "My singleton session"
+
+// 当提供 `session_name` 时，如果会话已在运行则附加
+// 否则创建新会话
+// 默认: false
+//
+// attach_to_session true
+
+// 切换 Zellij 是否尽可能按预定义布局排列窗格
+// 选项:
+//   - true (默认)
+//   - false
+//
+// auto_layout false
+
+// 会话是否序列化到缓存文件夹（包括标签/窗格、工作目录和运行命令）以便后续恢复
+// 选项:
+//   - true (默认)
+//   - false
+//
+// session_serialization false
+
+// 窗格视口是否随会话序列化，默认 false
+// 选项:
+//   - true
+//   - false (默认)
+//
+// serialize_pane_viewport false
+
+// 序列化窗格视口时一起序列化的滚动回溯行数
+// 0 默认等于滚动回溯大小
+// 如果此数字大于滚动回溯大小，则默认使用滚动回溯大小
+// 如果 `serialize_pane_viewport` 不为 true，则此设置无效
+//
+// scrollback_lines_to_serialize 10000
+
+// 启用或禁用带样式的下划线（波浪线）
+// 某些不支持的终端可能需要禁用
+// (需要重启)
+// 默认: true
+//
+// styled_underlines false
+
+// 会话序列化的间隔秒数
+//
+// serialization_interval 10000
+
+// 启用或禁用会话元数据写入磁盘（如果禁用，其他会话可能不知道此会话的元数据信息）
+// (需要重启)
+// 默认: false
+//
+// disable_session_metadata false
+
+// 启用或禁用增强的 Kitty 键盘协议支持（宿主终端也必须支持）
+// (需要重启)
+// 默认: true (如果宿主终端支持)
+//
+// support_kitty_keyboard_protocol false
+// 确保新 Zellij 会话启动时本地 Web 服务器运行
+// 此 Web 服务器允许创建新会话和附加到已选择通过浏览器共享的现有会话
+// 启用后，访问 http://127.0.0.1:8082
+// (需要重启)
+//
+// 注意: 本地 Web 服务器仍可从 Zellij 会话内或 CLI 手动启动
+// 如果不需要，可以使用不带 `web_server_capability` 编译的 Zellij 版本
+//
+// 可能的值:
+// - true
+// - false
+// 默认: false
+//
+// web_server true
+// 是否允许终端启动的会话通过本地 Web 服务器共享（假设服务器正在运行）
+// (需要重启)
+//
+// 注意: 这是管理分离，不是安全措施
+//
+// 可能的值:
+// - "on" (如果本地 Web 服务器在线，允许通过它共享)
+// - "off" (除非会话明确选择加入，否则不允许共享)
+// - "disabled" (不允许共享，也不允许终端启动的会话选择加入)
+// 默认: "off"
+//
+// web_sharing "on"
+// 设置 Web 客户端时使用的证书文件路径，用于通过 HTTPS 提供服务
+//
+// web_server_cert "/path/to/cert.pem"
+// 设置 Web 客户端时使用的密钥文件路径，用于通过 HTTPS 提供服务
+//
+// web_server_key "/path/to/key.pem"
+/// 是否在绑定到 localhost (127.0.0.0/8) 时强制使用 HTTPS 连接
+///
+/// 注意: 绑定到非本地接口时始终强制 HTTPS
+///
+/// 默认: false
+//
+// enforce_https_for_localhost false
+
+// 调整大小时是否堆叠窗格
+// 默认: true
+//
+// stacked_resize false
+
+
+// 首次运行时是否显示发行说明
+// 默认: true
+//
+// show_release_notes false
+
+// 是否启用鼠标悬停效果和窗格分组功能
+// 默认: true
+// advanced_mouse_actions false
+
+// 是否启用鼠标悬停视觉效果（边框高亮和帮助文本）
+// 默认: true
+// mouse_hover_effects false
+
+// 是否显示视觉响铃指示器（窗格/标签边框闪烁和 [!] 后缀）
+// 默认: true
+// visual_bell true
+
+// 鼠标悬停时是否聚焦窗格
+// 默认: false
+// focus_follows_mouse false
+
+// 点击窗格聚焦时是否同时将点击发送到窗格内
+// 默认: false
+// mouse_click_through false
+
+// Web 服务器启动时监听的 IP 地址
+// 默认: "127.0.0.1"
+// (需要重启)
+// web_server_ip "127.0.0.1"
+
+// Web 服务器启动时监听的端口
+// 默认: 8082
+// (需要重启)
+// web_server_port 8082
+
+// 恢复会话时执行的钩子命令（会被 sh -c 包裹，并传入 RESURRECT_COMMAND 环境变量）
+// Zellij 检测到窗格中的命令后，会用此命令的输出替代检测到的命令
+// 可用于去除命令包装器
+// 注意: 确保正确转义反斜杠等字符
+// post_command_discovery_hook "echo $RESURRECT_COMMAND | sed <your_regex_here>"
+
+// 每个活跃客户端的异步工作线程数
+//
+// 分配过少可能导致资源争用和延迟
+// 较小的值（约 4）通常效果最佳
+// 设为 0 使用物理 CPU 核心数
+// 注意: 目前仅适用于 Web 客户端
+// client_async_worker_tasks 4
