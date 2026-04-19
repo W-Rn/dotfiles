@@ -9,7 +9,7 @@ new_window() {
 
 # invoked by pane-focus-in event
 update_mru_pane_ids() {
-    read -ra o_data <<< "$(tmux show -gqv '@mru_pane_ids')"
+    read -ra o_data <<<"$(tmux show -gqv '@mru_pane_ids')"
     current_pane_id=$(tmux display-message -p '#D')
     n_data=("$current_pane_id")
     for i in "${!o_data[@]}"; do
@@ -40,11 +40,11 @@ do_action() {
         --bind="ctrl-s:execute(tmux move-pane -v -t $last_pane_cmd -s {1})+accept" \
         --bind="ctrl-t:execute-silent(tmux swap-pane -t $last_pane_cmd -s {1})+reload($cmd)") || return
 
-    read -ra ids_o <<< "$(tmux show -gqv '@mru_pane_ids')"
+    read -ra ids_o <<<"$(tmux show -gqv '@mru_pane_ids')"
     ids=()
     for id in "${ids_o[@]}"; do
         while read -r pane_line; do
-            read -ra pane_info <<< "$pane_line"
+            read -ra pane_info <<<"$pane_line"
             pane_id=${pane_info[0]}
             [[ "$id" == "$pane_id" ]] && ids+=("$id")
         done <<<"$selected"
@@ -65,7 +65,7 @@ do_action() {
 
         # my personally configuration
         if ((id_n == 2)); then
-            read -ra w_size <<< "$(tmux display-message -p '#{window_width} #{window_height}')"
+            read -ra w_size <<<"$(tmux display-message -p '#{window_width} #{window_height}')"
             w_wid=${w_size[0]}
             w_hei=${w_size[1]}
             if ((9 * w_wid > 16 * w_hei)); then
@@ -95,7 +95,7 @@ panes_src() {
     hostname=$(hostname)
     for id in $(tmux show -gqv '@mru_pane_ids'); do
         while read -r pane_line; do
-            read -ra pane_info <<< "$pane_line"
+            read -ra pane_info <<<"$pane_line"
             pane_id=${pane_info[0]}
             if [[ "$id" == "$pane_id" ]]; then
                 ids+=("$id")
@@ -104,14 +104,14 @@ panes_src() {
                 tty=${pane_info[3]#/dev/}
                 title="${pane_info[*]:4}"
                 while read -r ps_line; do
-                    read -ra p_info <<< "$ps_line"
+                    read -ra p_info <<<"$ps_line"
                     if [[ "$tty" == "${p_info[5]}" ]]; then
                         printf "%-6s  %-7s  %5s  %8s  %4s  %4s  %5s  %-8s  %-7s  " \
                             "$pane_id" "$session" "$pane" "${p_info[@]::6}"
                         cmd="${p_info[*]:6}"
                         # vim path of current buffer if it setted the title
                         if [[ $cmd =~ ^n?vim && $title != "$hostname" ]]; then
-                            read -ra cmd_arr <<< "$cmd"
+                            read -ra cmd_arr <<<"$cmd"
                             cmd="${cmd_arr[0]} $title"
                         fi
                         echo "$cmd"

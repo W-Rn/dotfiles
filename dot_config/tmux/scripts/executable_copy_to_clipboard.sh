@@ -7,15 +7,15 @@ tmux set-buffer -w -- "$content"
 
 # Best-effort: also call platform clip utilities when available
 if command -v pbcopy >/dev/null 2>&1; then
-  printf '%s' "$content" | pbcopy || true
+    printf '%s' "$content" | pbcopy || true
 elif command -v wl-copy >/dev/null 2>&1; then
-  printf '%s' "$content" | wl-copy --type text || wl-copy || true
+    printf '%s' "$content" | wl-copy --type text || wl-copy || true
 elif command -v xclip >/dev/null 2>&1; then
-  printf '%s' "$content" | xclip -selection clipboard || true
+    printf '%s' "$content" | xclip -selection clipboard || true
 elif command -v xsel >/dev/null 2>&1; then
-  printf '%s' "$content" | xsel --clipboard --input || true
+    printf '%s' "$content" | xsel --clipboard --input || true
 elif command -v powershell.exe >/dev/null 2>&1; then
-  powershell.exe -NoProfile -Command Set-Clipboard -Value @"
+    powershell.exe -NoProfile -Command Set-Clipboard -Value @"
 ${content}
 "@ || true
 fi
