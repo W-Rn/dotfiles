@@ -162,7 +162,7 @@ format = '[ $symbol( $version) ]($style)'
 
 [haskell]
 symbol = ""
-style = "g:green"
+style = "fg:green"
 format = '[ $symbol( $version) ]($style)'
 
 [python]
@@ -177,7 +177,7 @@ format = '[ $symbol( $context) ]($style)'
 
 [conda]
 symbol = ""
-style = "g:sapphire"
+style = "fg:sapphire"
 format = '[ $symbol( $environment) ]($style)'
 ignore_base = false
 
