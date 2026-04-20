@@ -216,9 +216,10 @@ style = "fg:lavender"
 format = '[ $indicator ](fg:lavender)($style)'
 
 [env_var.CHEZMOI]
+disabled = false
 variable = "CHEZMOI"
-format = "[🛠️ Dotfiles ]($style) "
 style = "bold fg:#9A348E"
+format = "[ Dotfiles ]($style)"
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
