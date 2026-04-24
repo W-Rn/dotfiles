@@ -18,20 +18,20 @@ fi
 
 status_bg=$(tmux show -gqv status-bg)
 if [[ -z "$status_bg" || "$status_bg" == "default" ]]; then
-    status_bg=black
+    status_bg="#2e3440"
 fi
 
 # segment_bg="#3b4252"
-segment_fg="#eceff4"
+segment_fg="#d8dee9"
 # Host (domain) colors to mirror left active style
-host_bg="${TMUX_THEME_COLOR:-#b294bb}"
-host_fg="#1d1f21"
+host_bg="${TMUX_THEME_COLOR:-#88c0d0}"
+host_fg="#2e3440"
 # separator=""
 separator=""
 right_cap="█"
 # right_cap=""
 hostname=$(hostname -s 2>/dev/null || hostname 2>/dev/null || printf 'host')
-rainbarf_bg="#2e3440"
+rainbarf_bg="#3b4252"
 rainbarf_segment=""
 rainbarf_toggle="${TMUX_RAINBARF:-1}"
 
@@ -54,17 +54,19 @@ if [[ "$rainbarf_toggle" == "1" ]] && command -v rainbarf >/dev/null 2>&1; then
     fi
 fi
 
-# Build a connector into the hostname segment using host colors
+# Time and date (24h)
+now=$(date '+%H:%M')
+date_str=$(date '+%Y-%m-%d')
+
+# Build a connector into the main block using host colors
 host_connector_bg="$status_bg"
 if [[ -n "$rainbarf_segment" ]]; then
     host_connector_bg="$rainbarf_bg"
 fi
-host_prefix=$(printf '#[fg=%s,bg=%s]%s#[fg=%s,bg=%s,bold] ' \
-    "$host_bg" "$host_connector_bg" "$separator" \
-    "$host_fg" "$host_bg")
 
-printf '%s%s%s #[fg=%s,bg=%s]%s' \
+printf '%s#[fg=%s,bg=%s]%s#[fg=%s,bg=%s,bold] %s %s | #[fg=%s,bg=%s]%s #[fg=%s,bg=%s]%s' \
     "$rainbarf_segment" \
-    "$host_prefix" \
-    "$hostname" \
+    "$host_bg" "$host_connector_bg" "$separator" \
+    "$host_fg" "$host_bg" "$now" "$date_str" \
+    "$host_fg" "$host_bg" "$hostname" \
     "$host_bg" "$status_bg" "$right_cap"
