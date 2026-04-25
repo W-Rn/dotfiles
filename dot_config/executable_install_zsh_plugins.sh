@@ -4,14 +4,13 @@ ZSH_PLUGIN_DIR="$HOME/.local/share/zsh/plugins"
 
 mkdir -p "$ZSH_PLUGIN_DIR"
 
-# 检查 git 依赖
 if ! command -v git &>/dev/null; then
     echo "❌ git is required to install these plugins."
     echo "Exiting..."
     exit 1
 fi
 
-typeset -A plugins
+typeset -gA plugins
 plugins=(
     "zsh-vi-mode"             "https://github.com/jeffreytse/zsh-vi-mode.git"
     "fzf-tab"                 "https://github.com/Aloxaf/fzf-tab.git"
@@ -21,28 +20,43 @@ plugins=(
 
 failed_plugins=()
 
-
 for name repo_url in ${(kv)plugins}; do
     target_dir="$ZSH_PLUGIN_DIR/$name"
 
     if [[ ! -d "$target_dir" ]]; then
         echo "🚀 $name not found, starting installation..."
         echo "📦 Cloning $name into $target_dir..."
-        git clone --depth 1 "$repo_url" "$target_dir"
-
-        if [[ $? -eq 0 ]]; then
-            echo "✨ $name installation completed!"
-        else
+        if ! git clone --depth 1 "$repo_url" "$target_dir"; then
             echo "❌ Failed to install $name. Please check your network connection."
+            rm -rf "$target_dir"
             failed_plugins+=("$name")
+        else
+            echo "✨ $name installation completed!"
+        fi
+    elif ! git -C "$target_dir" status &>/dev/null; then
+        echo "⚠️ $name directory exists but is broken, re-cloning..."
+        rm -rf "$target_dir"
+        if ! git clone --depth 1 "$repo_url" "$target_dir"; then
+            echo "❌ Failed to reinstall $name."
+            failed_plugins+=("$name")
+        else
+            echo "✨ $name reinstallation completed!"
+        fi
+    elif [[ "$(git -C "$target_dir" remote get-url origin 2>/dev/null | sed 's|^git@github\.com:|https://github.com/|; s|\.git$||; s|/$||')" != \
+            "$(sed 's|^git@github\.com:|https://github.com/|; s|\.git$||; s|/$||' <<< "$repo_url")" ]]; then
+        echo "⚠️ $name remote URL mismatch, re-cloning..."
+        rm -rf "$target_dir"
+        if ! git clone --depth 1 "$repo_url" "$target_dir"; then
+            echo "❌ Failed to reinstall $name."
+            failed_plugins+=("$name")
+        else
+            echo "✨ $name reinstallation completed!"
         fi
     else
         echo "✅ $name is already installed at: $target_dir"
-        # git -C "$target_dir" pull --quiet
     fi
 done
 
-# 最终状态检查汇总
 if [[ ${#failed_plugins[@]} -eq 0 ]]; then
     echo "✨ All Zsh plugins have been processed successfully in $ZSH_PLUGIN_DIR!"
 else
@@ -52,5 +66,3 @@ else
     done
     exit 1
 fi
-
-source "$HOME/.zshrc"
