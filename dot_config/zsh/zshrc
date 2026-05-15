@@ -4,7 +4,6 @@ source ~/.config/zsh/completion.zsh
 
 command -v starship &>/dev/null && eval "$(starship init zsh)"
 command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
-command -v fzf &>/dev/null && source <(fzf --zsh)
 
 source ~/.config/zsh/plugin.zsh
 source ~/.config/zsh/aliases.zsh
