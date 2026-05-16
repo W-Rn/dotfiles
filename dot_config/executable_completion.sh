@@ -39,6 +39,12 @@ if command -v fd &>/dev/null; then
     echo "✅ fd completion generated."
 fi
 
+# cargo 补全
+if command -v cargo &>/dev/null; then
+    rustup completions zsh cargo >"$COMP_DIR/_cargo" 2>/dev/null
+    echo "✅ cargo completion generated."
+fi
+
 # 强制 Zsh 重新构建补全缓存
 rm -f ~/.zcompdump
 echo "✅ All completions generated. Restart your shell or run: exec zsh"
