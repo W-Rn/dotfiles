@@ -22,7 +22,7 @@ mkdir -p "$SOFTWAREDIR"
 
 ##############################        Rust            ##############################
 if ! command -v "cargo" &>/dev/null; then
-    echo "🦀 Installing Rust..."
+    echo "🚀 Installing Rust..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 else
@@ -62,6 +62,7 @@ if ! command -v "nvim" &>/dev/null; then
     curl -Lo nvim.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
     rm -rf "$SOFTWAREDIR/nvim"
     mkdir -p "$SOFTWAREDIR/nvim"
+    mkdir -p "$HOME/.local/share/nvim/undo"
     echo "📦 Extracting neovim to $SOFTWAREDIR/nvim..."
     tar -xzf nvim.tar.gz -C "$SOFTWAREDIR/nvim" --strip-components=1
 
@@ -96,6 +97,33 @@ else
     echo "✅ fzf is already installed at: $(command -v fzf)"
 fi
 
+##############################        NVM & Node         ##############################
+if [ ! -d "$HOME/.nvm" ]; then
+    echo "🚀 Installing NVM (Node Version Manager)..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | PROFILE=/dev/null bash
+else
+    echo "✅ nvm is already installed."
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# 安装 Node.js LTS 版本
+if ! command -v "node" &>/dev/null; then
+    echo "📦 Installing Node.js LTS..."
+    nvm install --lts
+    nvm use --lts
+else
+    echo "✅ node is already installed at: $(command -v node) and at: NPM $(command -v npm)"
+fi
+
+# 配置 NPM 全局安装目录 (避免 sudo)
+if command -v npm &>/dev/null && [[ "$(npm config get prefix)" != "$NPM_GLOBAL_DIR" ]]; then
+    echo "⚙️ Configuring npm global directory at $NPM_GLOBAL_DIR..."
+    mkdir -p "$NPM_GLOBAL_DIR"
+    npm config set prefix "$NPM_GLOBAL_DIR"
+fi
+
 ##############################      cargo install       ##############################
 declare -A tools=(
     ["rg"]="ripgrep"
@@ -124,32 +152,4 @@ done
 if [[ ${#failed_tools[@]} -gt 0 ]]; then
     echo "❌ The following tools failed to install via cargo:" >&2
     printf "  - %s\n" "${failed_tools[@]}" >&2
-fi
-
-##############################        NVM & Node         ##############################
-if [ ! -d "$HOME/.nvm" ]; then
-    echo "🚀 Installing NVM (Node Version Manager)..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | PROFILE=/dev/null bash
-else
-    echo "✅ nvm is already installed."
-fi
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-# 安装 Node.js LTS 版本
-if ! command -v "node" &>/dev/null; then
-    echo "📦 Installing Node.js LTS..."
-    nvm install --lts
-    nvm use --lts
-else
-    echo "✅ node is already installed at: $(command -v node) and at: NPM $(command -v npm)"
-    echo "✨ Node $(node -v) and NPM $(npm -v) are ready!"
-fi
-
-# 配置 NPM 全局安装目录 (避免 sudo)
-if command -v npm &>/dev/null; then
-    echo "⚙️ Configuring npm global directory at $NPM_GLOBAL_DIR..."
-    mkdir -p "$NPM_GLOBAL_DIR"
-    npm config set prefix "$NPM_GLOBAL_DIR"
 fi
