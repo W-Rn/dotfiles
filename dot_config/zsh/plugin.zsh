@@ -7,13 +7,13 @@ load_plugin() {
     [[ -f "$file" ]] && source "$file"
 }
 
-load_plugin "zsh-vi-mode"
+# load_plugin "zsh-vi-mode"
 load_plugin "fzf-tab"
 load_plugin "zsh-autosuggestions"
 load_plugin "zsh-syntax-highlighting"
 
 zstyle ':fzf-tab:*' fzf-flags \
-    '--color=fg:7,fg+:2,hl:4,hl+:4' \
+    '--color=fg:#CDD6F4,fg+:#CDD6F4,hl:#F38BA8,hl+:#F38BA8,bg+:#313244,bg:#1E1E2E,spinner:#F5E0DC,header:#F38BA8,info:#CBA6F7,pointer:#F5E0DC,marker:#B4BEFE,prompt:#CBA6F7,selected-bg:#45475A,border:#6C7086,label:#CDD6F4' \
     '--height=80%' \
     '--layout=reverse' \
     '--border' \
