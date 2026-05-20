@@ -3,7 +3,7 @@
 
 INSTALLDIR="$HOME/.local/bin"
 SOFTWAREDIR="$HOME/.local/software"
-NPM_GLOBAL_DIR="$HOME/.npm-global"
+NODE_VERSION="22.14.0"
 LAZYGIT_VERSION="0.60.0"
 
 if [ ! -x "$(command -v curl)" ]; then
@@ -23,8 +23,12 @@ mkdir -p "$SOFTWAREDIR"
 ##############################        Rust            ##############################
 if ! command -v "cargo" &>/dev/null; then
     echo "🚀 Installing Rust..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+    if curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; then
+        [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+        echo "✨ Rust installation completed! at: $(command -v cargo)"
+    else
+        echo "❌ Failed to install Rust"
+    fi
 else
     echo "✅ cargo is already installed at: $(command -v cargo)"
 fi
@@ -34,7 +38,11 @@ export PATH="${HOME}/.cargo/bin:${INSTALLDIR}:${PATH}"
 ##############################        starship          ##############################
 if ! command -v "starship" &>/dev/null; then
     echo "🚀 Installing Starship..."
-    curl -sS https://starship.rs/install.sh | sh -s -- -y --bin-dir "$INSTALLDIR"
+    if curl -sS https://starship.rs/install.sh | sh -s -- -y --bin-dir "$INSTALLDIR"; then
+        echo "✨ starship installation completed! at: $(command -v starship)"
+    else
+        echo "❌ Failed to install starship"
+    fi
 else
     echo "✅ starship is already installed at: $(command -v starship)"
 fi
@@ -42,8 +50,11 @@ fi
 ##############################        chezmoi         ###############################
 if ! command -v "chezmoi" &>/dev/null; then
     echo "🚀 chezmoi not found, starting installation..."
-    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$INSTALLDIR"
-    echo "✨ chezmoi installation completed! at: $(command -v chezmoi)"
+    if sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$INSTALLDIR"; then
+        echo "✨ chezmoi installation completed! at: $(command -v chezmoi)"
+    else
+        echo "❌ Failed to install chezmoi"
+    fi
 else
     echo "✅ chezmoi is already installed at: $(command -v chezmoi)"
 fi
@@ -51,7 +62,11 @@ fi
 ##############################           uv              ##############################
 if ! command -v "uv" &>/dev/null; then
     echo "🚀 uv not found, starting installation..."
-    curl -LsSf https://astral.sh/uv/install.sh | sh -s -- -y --bin-dir "$INSTALLDIR"
+    if curl -LsSf https://astral.sh/uv/install.sh | sh -s -- -y --bin-dir "$INSTALLDIR"; then
+        echo "✨ uv installation completed! at: $(command -v uv)"
+    else
+        echo "❌ Failed to install uv"
+    fi
 else
     echo "✅ uv is already installed at: $(command -v uv)"
 fi
@@ -59,17 +74,20 @@ fi
 ##############################        neovim          ##############################
 if ! command -v "nvim" &>/dev/null; then
     echo "🚀 neovim not found, starting installation..."
-    curl -Lo nvim.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
-    rm -rf "$SOFTWAREDIR/nvim"
-    mkdir -p "$SOFTWAREDIR/nvim"
-    mkdir -p "$HOME/.local/share/nvim/undo"
-    echo "📦 Extracting neovim to $SOFTWAREDIR/nvim..."
-    tar -xzf nvim.tar.gz -C "$SOFTWAREDIR/nvim" --strip-components=1
-
-    echo "🔗 Linking nvim to $INSTALLDIR..."
-    ln -sf "$SOFTWAREDIR/nvim/bin/nvim" "$INSTALLDIR/nvim"
-    rm -f nvim.tar.gz
-    echo "✨ neovim installation completed! at: $(command -v nvim)"
+    TMPDIR=$(mktemp -d)
+    if curl -fLo "$TMPDIR/nvim.tar.gz" \
+        https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz && \
+        rm -rf "$SOFTWAREDIR/nvim" && \
+        mkdir -p "$SOFTWAREDIR/nvim" "$HOME/.local/share/nvim/undo" && \
+        echo "📦 Extracting neovim..." && \
+        tar -xzf "$TMPDIR/nvim.tar.gz" -C "$SOFTWAREDIR/nvim" --strip-components=1 && \
+        ln -sf "$SOFTWAREDIR/nvim/bin/nvim" "$INSTALLDIR/nvim" && \
+        rm -rf "$TMPDIR"; then
+        echo "✨ neovim installation completed! at: $(command -v nvim)"
+    else
+        echo "❌ Failed to install neovim"
+        rm -rf "$TMPDIR"
+    fi
 else
     echo "✅ neovim is already installed at: $(command -v nvim)"
 fi
@@ -92,36 +110,33 @@ fi
 ##############################        fzf              ##############################
 if ! command -v "fzf" &>/dev/null; then
     echo "🚀 fzf not found, starting installation..."
-    git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf" && "$HOME/.fzf/install" --no-update-rc
+    if git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf" && "$HOME/.fzf/install" --no-update-rc; then
+        echo "✨ fzf installation completed! at: $(command -v fzf)"
+    else
+        echo "❌ Failed to install fzf"
+        rm -rf "$HOME/.fzf"
+    fi
 else
     echo "✅ fzf is already installed at: $(command -v fzf)"
 fi
 
-##############################        NVM & Node         ##############################
-if [ ! -d "$HOME/.nvm" ]; then
-    echo "🚀 Installing NVM (Node Version Manager)..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | PROFILE=/dev/null bash
-else
-    echo "✅ nvm is already installed."
-fi
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-# 安装 Node.js LTS 版本
+##############################        Node.js          ##############################
 if ! command -v "node" &>/dev/null; then
-    echo "📦 Installing Node.js LTS..."
-    nvm install --lts
-    nvm use --lts
+    echo "🚀 Downloading Node.js v${NODE_VERSION}..."
+    TMPDIR=$(mktemp -d)
+    if curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" -o "$TMPDIR/node.tar.xz" && \
+        tar -xJf "$TMPDIR/node.tar.xz" -C "$SOFTWAREDIR" && \
+        ln -sf "$SOFTWAREDIR/node-v${NODE_VERSION}-linux-x64/bin/node" "$INSTALLDIR/node" && \
+        ln -sf "$SOFTWAREDIR/node-v${NODE_VERSION}-linux-x64/bin/npm" "$INSTALLDIR/npm" && \
+        ln -sf "$SOFTWAREDIR/node-v${NODE_VERSION}-linux-x64/bin/npx" "$INSTALLDIR/npx"; then
+        rm -rf "$TMPDIR"
+        echo "✨ Node.js v${NODE_VERSION} installation completed! at: $(command -v node)"
+    else
+        echo "❌ Failed to install Node.js"
+        rm -rf "$TMPDIR" "$SOFTWAREDIR/node-v${NODE_VERSION}-linux-x64"
+    fi
 else
-    echo "✅ node is already installed at: $(command -v node) and at: NPM $(command -v npm)"
-fi
-
-# 配置 NPM 全局安装目录 (避免 sudo)
-if command -v npm &>/dev/null && [[ "$(npm config get prefix)" != "$NPM_GLOBAL_DIR" ]]; then
-    echo "⚙️ Configuring npm global directory at $NPM_GLOBAL_DIR..."
-    mkdir -p "$NPM_GLOBAL_DIR"
-    npm config set prefix "$NPM_GLOBAL_DIR"
+    echo "✅ node is already installed at: $(command -v node)"
 fi
 
 ##############################      cargo install       ##############################
