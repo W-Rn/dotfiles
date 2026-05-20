@@ -18,55 +18,58 @@ fi
 
 status_bg=$(tmux show -gqv status-bg)
 if [[ -z "$status_bg" || "$status_bg" == "default" ]]; then
-    status_bg="#2e3440"
+    status_bg="#1a1b26"
 fi
 
-# segment_bg="#3b4252"
-segment_fg="#d8dee9"
-# Host (domain) colors to mirror left active style
-host_bg="${TMUX_THEME_COLOR:-#88c0d0}"
-host_fg="#2e3440"
-# separator=""
+# ── 各区块独立配色 ──
+sys_seg_bg="#3b4261"
+sys_seg_fg="#c0caf5"
+time_seg_bg="#cba6f7"
+time_seg_fg="#1a1b26"
+hostname_seg_bg="${TMUX_THEME_COLOR:-#7aa2f7}"
+hostname_seg_fg="#1a1b26"
+
 separator=""
 right_cap="█"
-# right_cap=""
 hostname=$(hostname -s 2>/dev/null || hostname 2>/dev/null || printf 'host')
-rainbarf_bg="#3b4252"
-rainbarf_segment=""
-rainbarf_toggle="${TMUX_RAINBARF:-1}"
 
-case "$rainbarf_toggle" in
-0 | false | FALSE | off | OFF | no | NO)
-    rainbarf_toggle="0"
-    ;;
-*)
-    rainbarf_toggle="1"
-    ;;
-esac
-
-if [[ "$rainbarf_toggle" == "1" ]] && command -v rainbarf >/dev/null 2>&1; then
-    rainbarf_output=$(rainbarf --no-battery --no-remaining --no-bolt --tmux --rgb 2>/dev/null || true)
-    rainbarf_output=${rainbarf_output//$'\n'/}
-    if [[ -n "$rainbarf_output" ]]; then
-        rainbarf_segment=$(printf '#[fg=%s,bg=%s]%s#[fg=%s,bg=%s]%s' \
-            "$rainbarf_bg" "$status_bg" "$separator" \
-            "$segment_fg" "$rainbarf_bg" "$rainbarf_output")
+# ── System 段 ──
+sys_segment=""
+if command -v tmux-mem-cpu-load >/dev/null 2>&1; then
+    sys_raw=$(tmux-mem-cpu-load 2>/dev/null || true)
+    if [[ -n "$sys_raw" ]]; then
+        mem_text=$(awk '{print $1}' <<<"$sys_raw")
+        cpu=$(awk '{print $4}' <<<"$sys_raw")
+        sys_output="${mem_text:+  $mem_text }${cpu:+  $cpu}"
+        sys_segment=$(printf '#[fg=%s,bg=%s]%s#[fg=%s,bg=%s] %s ' \
+            "$sys_seg_bg" "$status_bg" "$separator" \
+            "$sys_seg_fg" "$sys_seg_bg" "$sys_output")
     fi
 fi
 
-# Time and date (24h)
+# ── Time 段 ──
 now=$(date '+%H:%M')
 date_str=$(date '+%Y-%m-%d')
 
-# Build a connector into the main block using host colors
-host_connector_bg="$status_bg"
-if [[ -n "$rainbarf_segment" ]]; then
-    host_connector_bg="$rainbarf_bg"
-fi
+connector_bg="$status_bg"
+[[ -n "$sys_segment" ]] && connector_bg="$sys_seg_bg"
 
-printf '%s#[fg=%s,bg=%s]%s#[fg=%s,bg=%s,bold] %s %s | #[fg=%s,bg=%s]%s #[fg=%s,bg=%s]%s' \
-    "$rainbarf_segment" \
-    "$host_bg" "$host_connector_bg" "$separator" \
-    "$host_fg" "$host_bg" "$now" "$date_str" \
-    "$host_fg" "$host_bg" "$hostname" \
-    "$host_bg" "$status_bg" "$right_cap"
+time_segment=$(printf '#[fg=%s,bg=%s]%s#[fg=%s,bg=%s,bold]  %s %s ' \
+    "$time_seg_bg" "$connector_bg" "$separator" \
+    "$time_seg_fg" "$time_seg_bg" "$now" "$date_str")
+
+# ── Hostname 段 ──
+hostname_segment=$(printf '#[fg=%s,bg=%s]%s#[fg=%s,bg=%s,bold]  %s ' \
+    "$hostname_seg_bg" "$time_seg_bg" "$separator" \
+    "$hostname_seg_fg" "$hostname_seg_bg" "$hostname")
+
+# ── 右侧收尾 ──
+right_cap_segment=$(printf '#[fg=%s,bg=%s]%s' \
+    "$hostname_seg_bg" "$status_bg" "$right_cap")
+
+# ── 最终输出 ──
+printf '%s%s%s%s' \
+    "$sys_segment" \
+    "$time_segment" \
+    "$hostname_segment" \
+    "$right_cap_segment"

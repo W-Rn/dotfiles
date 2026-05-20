@@ -11,17 +11,16 @@ IFS=$'\t' read -r detect_session_id detect_session_name term_width status_bg < <
 
 [[ -z "$current_session_id" ]] && current_session_id="$detect_session_id"
 [[ -z "$current_session_name" ]] && current_session_name="$detect_session_name"
-[[ -z "$status_bg" || "$status_bg" == "default" ]] && status_bg="#2e3440"
+[[ -z "$status_bg" || "$status_bg" == "default" ]] && status_bg="#1a1b26"
 term_width="${term_width:-100}"
 
-inactive_bg="#3b4252"
-inactive_fg="#d8dee9"
-active_bg="${TMUX_THEME_COLOR:-#88c0d0}"
-active_fg="#2e3440"
+inactive_bg="#24283b"
+inactive_fg="#c0caf5"
+active_bg="${TMUX_THEME_COLOR:-#7aa2f7}"
+active_fg="#1a1b26"
 # separator=""
 separator=""
 left_cap="█"
-# left_cap=""
 max_width=18
 
 left_narrow_width=${TMUX_LEFT_NARROW_WIDTH:-80}
