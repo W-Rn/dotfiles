@@ -1,6 +1,11 @@
 # --- 补全初始化 ---
 fpath=($HOME/.local/share/zsh/completion/ $fpath)
-autoload -Uz compinit && compinit
+autoload -Uz compinit
+if [[ -n "${ZDOTDIR:-$HOME}/.zcompdump"(#qN.mh+24) ]]; then
+    compinit -C
+else
+    compinit
+fi
 
 # 基础策
 zstyle ':completion:*' menu no
